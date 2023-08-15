@@ -4,7 +4,6 @@ import (
 	"flag"
 	"github.com/caarlos0/env"
 	"gophermart/cmd/repo"
-	"gophermart/cmd/repo/postgres"
 	"log"
 )
 
@@ -18,7 +17,7 @@ func NewConfig() *Config {
 	config := &Config{}
 	config.loadConfigFromArgs()
 	config.loadConfigFromEnv()
-	config.Repo = postgres.NewPostgresRepo(config)
+	//config.Repo = postgres.NewPostgresRepo(config)
 	return config
 }
 

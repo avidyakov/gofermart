@@ -1,0 +1,36 @@
+# .dockerignore
+.git
+.github
+.gitignore
+*.md
+*.iml
+README.md
+SPECIFICATION.md
+
+# Binaries for Go applications
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test files
+*_test.go
+
+# Dependencies
+vendor/
+
+# IDE - VSCode
+.vscode
+
+# IDE - JetBrains, Pycharm
+.idea
+
+# GoLand build output
+dist
+
+# Log files
+*.log
+
+# Other files
+.DS_Store

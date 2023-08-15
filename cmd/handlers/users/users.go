@@ -3,7 +3,6 @@ package users
 import (
 	"encoding/json"
 	"fmt"
-	"gophermart/cmd/config"
 	"gophermart/cmd/handlers/models"
 	"log"
 	"net/http"
@@ -19,7 +18,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	config.Repo.CreateUser(user.Username, user.Password)
+	//config.Repo.CreateUser(user.Username, user.Password)
 
 	log.Println("Registered user:", user.Username)
 	w.WriteHeader(http.StatusCreated)
