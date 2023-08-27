@@ -17,7 +17,6 @@ func NewConfig() *Config {
 	config := &Config{}
 	config.loadConfigFromArgs()
 	config.loadConfigFromEnv()
-	//config.Repo = postgres.NewPostgresRepo(config)
 	return config
 }
 
