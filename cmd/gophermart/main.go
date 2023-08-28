@@ -11,7 +11,7 @@ import (
 func main() {
 	log.Println("Initializing server configuration and handlers")
 	conf := config.NewConfig()
-	repo := postgres.NewPostgresRepo(conf)
+	repo := postgres.NewRepo(conf)
 	h := handlers.New(repo, conf)
 
 	log.Println("Starting server on address", conf.RunAddress)

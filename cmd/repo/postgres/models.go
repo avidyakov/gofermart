@@ -17,6 +17,11 @@ func (u *User) setPassword(raw string) {
 	u.Password = hashPassword(raw)
 }
 
+func (u *User) checkPassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+	return err == nil
+}
+
 func hashPassword(raw string) string {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(raw), bcrypt.DefaultCost)
 	if err != nil {

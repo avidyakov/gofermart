@@ -8,18 +8,18 @@ import (
 	"log"
 )
 
-type PostgresRepo struct {
+type Repo struct {
 	db *gorm.DB
 }
 
-func NewPostgresRepo(config *config.Config) repo.Repo {
+func NewRepo(config *config.Config) repo.Repo {
 	db, err := gorm.Open(postgres.Open(config.DatabaseURI), &gorm.Config{})
 	handleError(err)
 
 	err = db.AutoMigrate(&User{})
 	handleError(err)
 
-	return &PostgresRepo{
+	return &Repo{
 		db: db,
 	}
 }

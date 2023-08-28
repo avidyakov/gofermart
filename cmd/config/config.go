@@ -3,14 +3,15 @@ package config
 import (
 	"flag"
 	"github.com/caarlos0/env"
-	"gophermart/cmd/repo"
 	"log"
+	"time"
 )
 
 type Config struct {
-	RunAddress  string `env:"RUN_ADDRESS"`
-	DatabaseURI string `env:"DATABASE_URI"`
-	Repo        repo.Repo
+	RunAddress  string        `env:"RUN_ADDRESS"`
+	DatabaseURI string        `env:"DATABASE_URI"`
+	SecretKey   string        `env:"SECRET_KEY"`
+	TokenExp    time.Duration `env:"TOKEN_EXP"`
 }
 
 func NewConfig() *Config {
@@ -23,6 +24,8 @@ func NewConfig() *Config {
 func (c *Config) loadConfigFromArgs() {
 	flag.StringVar(&c.RunAddress, "a", ":8080", "run address")
 	flag.StringVar(&c.DatabaseURI, "d", "postgres://postgres:changeme@localhost:5432/gofermart", "database uri")
+	flag.StringVar(&c.SecretKey, "s", "", "secret key")
+	flag.DurationVar(&c.TokenExp, "t", time.Hour*3, "secret key")
 	flag.Parse()
 }
 
