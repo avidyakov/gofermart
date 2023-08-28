@@ -1,11 +1,31 @@
 package postgres
 
-func (r *PostgresRepo) CreateUser(username, password string) error {
+import (
+	"errors"
+	"fmt"
+	"github.com/jackc/pgx/v5/pgconn"
+	"gophermart/cmd/repo"
+)
+
+const (
+	PgUniqueViolationErrorCode = "23505"
+)
+
+func (r *PostgresRepo) CreateUser(login, password string) error {
 	user := User{
-		Username: username,
+		Username: login,
 	}
 	user.setPassword(password)
+	dbc := r.db.Create(&user)
 
-	err := r.db.Create(&user).Error
-	return err
+	if dbc.Error != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(dbc.Error, &pgErr) {
+			if pgErr.Code == PgUniqueViolationErrorCode {
+				return fmt.Errorf("%w", repo.ErrUserExists)
+			}
+			return pgErr
+		}
+	}
+	return nil
 }

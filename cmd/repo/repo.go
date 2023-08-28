@@ -1,5 +1,9 @@
 package repo
 
+import "errors"
+
 type Repo interface {
-	CreateUser(username, password string) error
+	CreateUser(login, password string) error
 }
+
+var ErrUserExists = errors.New("user already exists")
