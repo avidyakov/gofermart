@@ -1,11 +1,14 @@
 package main
 
 import (
+	"log"
+	"net/http"
+)
+
+import (
 	"gophermart/cmd/config"
 	"gophermart/cmd/handlers"
 	"gophermart/cmd/repo/postgres"
-	"log"
-	"net/http"
 )
 
 func main() {
