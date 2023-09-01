@@ -9,6 +9,7 @@ func (h *Handlers) NewRouter() chi.Router {
 	router.Route("/api/user", func(r chi.Router) {
 		r.Post("/register", h.Register)
 		r.Post("/login", h.Login)
+		r.Post("/orders", h.CreateOrder)
 	})
 	return router
 }

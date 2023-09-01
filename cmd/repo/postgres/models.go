@@ -3,7 +3,6 @@ package postgres
 import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"log"
 )
 
 type User struct {
@@ -11,10 +10,17 @@ type User struct {
 	ID       uint   `gorm:"primaryKey"`
 	Username string `gorm:"unique"`
 	Password string
+	Orders   []Order `gorm:"foreignKey:UserID"`
 }
 
-func (u *User) setPassword(raw string) {
-	u.Password = hashPassword(raw)
+func (u *User) setPassword(raw string) error {
+	hashed, err := hashPassword(raw)
+	if err != nil {
+		return err
+	}
+
+	u.Password = hashed
+	return nil
 }
 
 func (u *User) checkPassword(password string) bool {
@@ -22,10 +28,14 @@ func (u *User) checkPassword(password string) bool {
 	return err == nil
 }
 
-func hashPassword(raw string) string {
+func hashPassword(raw string) (string, error) {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(raw), bcrypt.DefaultCost)
-	if err != nil {
-		log.Fatalf("Failed to hash password: %v", err)
-	}
-	return string(hashed)
+	return string(hashed), err
+}
+
+type Order struct {
+	gorm.Model
+	ID     uint   `gorm:"primaryKey"`
+	Number string `gorm:"unique"`
+	UserID uint
 }

@@ -16,9 +16,12 @@ func (r *Repo) CreateUser(login, password string) (uint, error) {
 	user := User{
 		Username: login,
 	}
-	user.setPassword(password)
-	dbc := r.db.Create(&user)
+	err := user.setPassword(password)
+	if err != nil {
+		return 0, err
+	}
 
+	dbc := r.db.Create(&user)
 	if dbc.Error != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(dbc.Error, &pgErr) {
@@ -41,4 +44,16 @@ func (r *Repo) CheckPassword(login, password string) (bool, error) {
 		return false, dbc.Error
 	}
 	return user.checkPassword(password), nil
+}
+
+func (r *Repo) GetUser(login string) (uint, error) {
+	var user User
+	dbc := r.db.Where("username = ?", login).First(&user)
+	if dbc.Error != nil {
+		if errors.Is(dbc.Error, gorm.ErrRecordNotFound) {
+			return 0, fmt.Errorf("%w", repo.ErrUserNotFound)
+		}
+		return 0, dbc.Error
+	}
+	return user.ID, nil
 }

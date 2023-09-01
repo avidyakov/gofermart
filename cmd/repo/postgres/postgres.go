@@ -19,6 +19,9 @@ func NewRepo(config *config.Config) repo.Repo {
 	err = db.AutoMigrate(&User{})
 	handleError(err)
 
+	err = db.AutoMigrate(&Order{})
+	handleError(err)
+
 	return &Repo{
 		db: db,
 	}
