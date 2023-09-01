@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -22,7 +22,7 @@ func (h *Handlers) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orderNumber, _ := ioutil.ReadAll(r.Body)
+	orderNumber, _ := io.ReadAll(r.Body)
 	// TODO: add validation
 	_, repoErr := h.repo.CreateOrder(string(orderNumber), userID)
 	if repoErr != nil {
