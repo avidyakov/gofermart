@@ -23,3 +23,5 @@ type Repo interface {
 
 var ErrUserExists = errors.New("user already exists")
 var ErrUserNotFound = errors.New("user not found")
+var ErrOrderExists = errors.New("order already exists")
+var ErrOrderAlreadyUploaded = errors.New("order already uploaded by this user")

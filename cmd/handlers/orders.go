@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"gophermart/cmd/handlers/models"
+	"gophermart/cmd/repo"
 	"log"
 	"net/http"
 )
@@ -26,16 +28,22 @@ func (h *Handlers) CreateOrder(w http.ResponseWriter, r *http.Request) {
 
 	orderNumber, validationErr := models.NewOrderInput(r.Body)
 	if validationErr != nil {
-		http.Error(w, validationErr.Error(), http.StatusBadRequest)
+		http.Error(w, validationErr.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 	_, repoErr := h.repo.CreateOrder(string(*orderNumber), userID)
-	if repoErr != nil {
+	if errors.Is(repoErr, repo.ErrOrderExists) {
+		http.Error(w, "Order already exists", http.StatusConflict)
+		return
+	} else if errors.Is(repoErr, repo.ErrOrderAlreadyUploaded) {
+		w.WriteHeader(http.StatusOK)
+		return
+	} else if repoErr != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
-	log.Printf("User %s create order %s", userLogin, orderNumber)
+	log.Printf("User %s create order %s", userLogin, string(*orderNumber))
 }
 
 func (h *Handlers) GetOrders(w http.ResponseWriter, r *http.Request) {

@@ -3,12 +3,20 @@ package postgres
 import "gophermart/cmd/repo"
 
 func (r *Repo) CreateOrder(number string, userID uint) (orderID uint, err error) {
-	order := Order{
+	var order Order
+	dbc := r.db.Where("number = ?", number).First(&order)
+	if order.UserID == userID {
+		return 0, repo.ErrOrderAlreadyUploaded
+	} else if order.ID != 0 {
+		return 0, repo.ErrOrderExists
+	}
+
+	order = Order{
 		Number: number,
 		UserID: userID,
 		Status: New,
 	}
-	dbc := r.db.Create(&order)
+	dbc = r.db.Create(&order)
 	if dbc.Error != nil {
 		return 0, dbc.Error
 	}
