@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"gophermart/cmd/handlers/models"
-	"io"
 	"log"
 	"net/http"
 )
@@ -25,15 +24,18 @@ func (h *Handlers) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orderNumber, _ := io.ReadAll(r.Body)
-	// TODO: add validation
-	_, repoErr := h.repo.CreateOrder(string(orderNumber), userID)
+	orderNumber, validationErr := models.NewOrderInput(r.Body)
+	if validationErr != nil {
+		http.Error(w, validationErr.Error(), http.StatusBadRequest)
+		return
+	}
+	_, repoErr := h.repo.CreateOrder(string(*orderNumber), userID)
 	if repoErr != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
-	log.Printf("User %s create order %s", userLogin, string(orderNumber))
+	log.Printf("User %s create order %s", userLogin, orderNumber)
 }
 
 func (h *Handlers) GetOrders(w http.ResponseWriter, r *http.Request) {
@@ -58,9 +60,9 @@ func (h *Handlers) GetOrders(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	var jsonOrders []models.Order
+	var jsonOrders []models.OrderOutput
 	for _, order := range orders {
-		jsonOrders = append(jsonOrders, models.Order{
+		jsonOrders = append(jsonOrders, models.OrderOutput{
 			Number:    order.Number,
 			CreatedAt: order.CreatedAt,
 			Status:    order.Status,
