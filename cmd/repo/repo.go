@@ -1,6 +1,16 @@
 package repo
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
+
+type Order struct {
+	Number    string
+	CreatedAt time.Time
+	Status    string
+	Accrual   float64
+}
 
 type Repo interface {
 	CreateUser(login, password string) (userID uint, err error)
@@ -8,6 +18,7 @@ type Repo interface {
 	CheckPassword(login, password string) (bool, error)
 
 	CreateOrder(number string, userID uint) (orderID uint, err error)
+	GetOrders(userID uint) ([]Order, error)
 }
 
 var ErrUserExists = errors.New("user already exists")

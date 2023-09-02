@@ -33,9 +33,24 @@ func hashPassword(raw string) (string, error) {
 	return string(hashed), err
 }
 
+type Status int
+
+const (
+	New Status = iota
+	Processing
+	Invalid
+	Processed
+)
+
+func (s Status) String() string {
+	return []string{"NEW", "PROCESSING", "INVALID", "PROCESSED"}[s]
+}
+
 type Order struct {
 	gorm.Model
-	ID     uint   `gorm:"primaryKey"`
-	Number string `gorm:"unique"`
-	UserID uint
+	ID      uint    `gorm:"primaryKey"`
+	Number  string  `gorm:"unique"`
+	Status  Status  `gorm:"default:0"`
+	Accrual float64 `gorm:"default:0"`
+	UserID  uint
 }
