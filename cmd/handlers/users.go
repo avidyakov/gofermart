@@ -91,10 +91,8 @@ func (h *Handlers) getUserLogin(tokenString string) string {
 	}
 
 	if !token.Valid {
-		log.Println("Token is not valid")
 		return ""
 	}
 
-	log.Println("Token os valid")
 	return claims.UserLogin
 }

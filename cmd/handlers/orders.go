@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"gophermart/cmd/handlers/models"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -32,6 +33,7 @@ func (h *Handlers) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
+	log.Printf("User %s create order %s", userLogin, string(orderNumber))
 }
 
 func (h *Handlers) GetOrders(w http.ResponseWriter, r *http.Request) {
@@ -78,4 +80,6 @@ func (h *Handlers) GetOrders(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+
+	log.Printf("User %s get orders", userLogin)
 }
