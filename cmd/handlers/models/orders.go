@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"regexp"
+	"strconv"
 	"time"
 )
 
@@ -31,6 +32,32 @@ func (o OrderInput) Validate() error {
 	if err != nil || !matched {
 		return errors.New("number must contain only integers")
 	}
-
+	if !checkLuhn(string(o)) {
+		return errors.New("invalid number according to the Luhn algorithm")
+	}
 	return nil
+}
+
+func doubleDigit(d int) int {
+	dd := d * 2
+	if dd > 9 {
+		dd = dd - 9
+	}
+	return dd
+}
+
+func checkLuhn(s string) bool {
+	n, _ := strconv.Atoi(s)
+	sum := 0
+	flip := false
+	for n > 0 {
+		if flip {
+			sum += doubleDigit(n % 10)
+		} else {
+			sum += n % 10
+		}
+		n /= 10
+		flip = !flip
+	}
+	return sum%10 == 0
 }
