@@ -16,14 +16,17 @@ func NewRepo(config *config.Config) repo.Repo {
 	db, err := gorm.Open(postgres.Open(config.DatabaseURI), &gorm.Config{})
 	handleError(err)
 
-	err = db.AutoMigrate(&User{})
-	handleError(err)
-
-	err = db.AutoMigrate(&Order{})
-	handleError(err)
+	autoMigrateModels(db, &User{}, &Order{}, &Transaction{})
 
 	return &Repo{
 		db: db,
+	}
+}
+
+func autoMigrateModels(db *gorm.DB, models ...interface{}) {
+	for _, model := range models {
+		err := db.AutoMigrate(model)
+		handleError(err)
 	}
 }
 

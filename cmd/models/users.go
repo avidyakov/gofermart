@@ -6,10 +6,6 @@ import (
 	"io"
 )
 
-type Model interface {
-	Validate() error
-}
-
 type User struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`

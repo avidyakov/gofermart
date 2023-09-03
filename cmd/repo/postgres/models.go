@@ -53,4 +53,13 @@ type Order struct {
 	Status  Status  `gorm:"default:0"`
 	Accrual float64 `gorm:"default:0"`
 	UserID  uint
+
+	Transactions []Transaction `gorm:"foreignKey:OrderID"`
+}
+
+type Transaction struct {
+	gorm.Model
+	ID      uint `gorm:"primaryKey"`
+	OrderID uint
+	Amount  float64
 }

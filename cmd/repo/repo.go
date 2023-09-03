@@ -19,6 +19,9 @@ type Repo interface {
 
 	CreateOrder(number string, userID uint) (orderID uint, err error)
 	GetOrders(userID uint) ([]Order, error)
+
+	GetBalance(userID uint) (float64, error)
+	GetUsed(userID uint) (float64, error)
 }
 
 var ErrUserExists = errors.New("user already exists")

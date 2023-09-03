@@ -11,6 +11,7 @@ func (h *Handlers) NewRouter() chi.Router {
 		r.Post("/login", h.Login)
 		r.Post("/orders", h.CreateOrder)
 		r.Get("/orders", h.GetOrders)
+		r.Get("/balance", h.GetBalance)
 	})
 	return router
 }

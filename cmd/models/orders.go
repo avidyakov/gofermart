@@ -38,14 +38,6 @@ func (o OrderInput) Validate() error {
 	return nil
 }
 
-func doubleDigit(d int) int {
-	dd := d * 2
-	if dd > 9 {
-		dd = dd - 9
-	}
-	return dd
-}
-
 func checkLuhn(s string) bool {
 	n, _ := strconv.Atoi(s)
 	sum := 0
@@ -60,4 +52,12 @@ func checkLuhn(s string) bool {
 		flip = !flip
 	}
 	return sum%10 == 0
+}
+
+func doubleDigit(d int) int {
+	dd := d * 2
+	if dd > 9 {
+		dd = dd - 9
+	}
+	return dd
 }

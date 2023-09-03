@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
-	"gophermart/cmd/handlers/models"
+	"gophermart/cmd/models"
 	"gophermart/cmd/repo"
 	"log"
 	"net/http"

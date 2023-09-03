@@ -3,7 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"gophermart/cmd/handlers/models"
+	"gophermart/cmd/models"
 	"gophermart/cmd/repo"
 	"log"
 	"net/http"
