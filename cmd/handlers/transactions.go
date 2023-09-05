@@ -108,3 +108,50 @@ func (h *Handlers) Withdraw(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	log.Printf("User %s withdraw", userLogin)
 }
+
+func (h *Handlers) GetWithdrawals(w http.ResponseWriter, r *http.Request) {
+	token := r.Header.Get("Authorization")
+	if token == "" {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	userLogin := h.getUserLogin(token[7:])
+	if userLogin == "" {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	userID, userErr := h.repo.GetUser(userLogin)
+	if userErr != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	withdrawals, repoErr := h.repo.GetWithdrawals(userID)
+	if repoErr != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	response := make([]models.WithdrawalOutput, 0, len(withdrawals))
+	for _, withdrawal := range withdrawals {
+		response = append(response, models.WithdrawalOutput{
+			Order:       withdrawal.Order,
+			Sum:         -withdrawal.Sum,
+			ProcessedAt: withdrawal.ProcessedAt,
+		})
+	}
+
+	jsonData, err := json.Marshal(withdrawals)
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_, err = w.Write(jsonData)
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	log.Printf("User %s get withdrawals", userLogin)
+}

@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/json"
 	"io"
+	"time"
 )
 
 type Balance struct {
@@ -33,4 +34,10 @@ func NewWithdrawal(raw io.Reader) (*Withdrawal, error) {
 		return nil, validationErr
 	}
 	return &w, nil
+}
+
+type WithdrawalOutput struct {
+	Order       string    `json:"order"`
+	Sum         int       `json:"sum"`
+	ProcessedAt time.Time `json:"processed_at"`
 }

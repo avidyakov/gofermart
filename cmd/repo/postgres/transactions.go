@@ -1,5 +1,7 @@
 package postgres
 
+import "gophermart/cmd/repo"
+
 func (r *Repo) GetBalance(userID uint) (float64, error) {
 	var balance float64
 	dbc := r.db.Table("transactions").Joins("inner join orders on transactions.order_id = orders.id").Where("orders.user_id = ?", userID).Select("COALESCE(sum(transactions.amount), 0)").Scan(&balance)
@@ -35,4 +37,18 @@ func (r *Repo) MakeTransaction(orderNumber string, amount float64) error {
 		return dbc.Error
 	}
 	return nil
+}
+
+func (r *Repo) GetWithdrawals(userID uint) ([]repo.Withdrawal, error) {
+	var withdrawals []repo.Withdrawal
+	dbc := r.db.Table("transactions").
+		Joins("inner join orders on transactions.order_id = orders.id").
+		Where("orders.user_id = ? AND transactions.amount < 0", userID).
+		Select("transactions.order_id, transactions.amount, transactions.created_at").
+		Scan(&withdrawals)
+
+	if dbc.Error != nil {
+		return nil, dbc.Error
+	}
+	return withdrawals, nil
 }

@@ -12,6 +12,12 @@ type Order struct {
 	Accrual   float64
 }
 
+type Withdrawal struct {
+	Order       string
+	Sum         int
+	ProcessedAt time.Time
+}
+
 type Repo interface {
 	CreateUser(login, password string) (userID uint, err error)
 	GetUser(login string) (userID uint, err error)
@@ -23,6 +29,7 @@ type Repo interface {
 	MakeTransaction(orderNumber string, amount float64) error
 	GetBalance(userID uint) (float64, error)
 	GetUsed(userID uint) (float64, error)
+	GetWithdrawals(userID uint) ([]Withdrawal, error)
 }
 
 var ErrUserExists = errors.New("user already exists")
