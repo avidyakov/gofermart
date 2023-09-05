@@ -135,7 +135,7 @@ func (h *Handlers) GetWithdrawals(w http.ResponseWriter, r *http.Request) {
 	for _, withdrawal := range withdrawals {
 		response = append(response, models.WithdrawalOutput{
 			Order:       withdrawal.Order,
-			Sum:         -withdrawal.Sum,
+			Sum:         withdrawal.Sum,
 			ProcessedAt: withdrawal.ProcessedAt,
 		})
 	}
