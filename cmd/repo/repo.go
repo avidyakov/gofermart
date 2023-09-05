@@ -14,7 +14,7 @@ type Order struct {
 
 type Withdrawal struct {
 	Order       string
-	Sum         int
+	Sum         float64
 	ProcessedAt time.Time
 }
 
