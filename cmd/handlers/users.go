@@ -69,7 +69,6 @@ func (h *Handlers) Login(w http.ResponseWriter, r *http.Request) {
 	log.Println("Logged in user:", user.Login)
 }
 
-// TODO: move to separate file
 func (h *Handlers) buildJWTString(userLogin string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		RegisteredClaims: jwt.RegisteredClaims{

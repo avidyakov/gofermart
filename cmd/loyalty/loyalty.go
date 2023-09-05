@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -48,10 +49,13 @@ func (a *AccrualSystem) GetAccrual(orderNumber string) (float64, error) {
 			return 0, fmt.Errorf("error unmarshaling response: %v", err)
 		}
 
+		log.Printf("result: %v", accrualResponse)
 		return accrualResponse.Accrual, nil
-	} else if resp.StatusCode == http.StatusInternalServerError {
+	}
+	if resp.StatusCode == http.StatusInternalServerError {
 		return 0, fmt.Errorf("error getting Accrual: %v", err)
 	}
 
+	log.Printf("response status code: %d", resp.StatusCode)
 	return 0, nil
 }
