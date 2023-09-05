@@ -90,9 +90,17 @@ func (h *Handlers) Withdraw(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Bad request", http.StatusPaymentRequired)
 		return
 	} else {
+		_, orderErr := h.repo.CreateOrder(withdrawal.Order, userID)
+		if orderErr != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			log.Printf("Error creating order: %v", orderErr)
+			return
+		}
+
 		repoErr := h.repo.MakeTransaction(withdrawal.Order, -withdrawal.Sum)
 		if repoErr != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			log.Printf("Error making transaction: %v", repoErr)
 			return
 		}
 	}
