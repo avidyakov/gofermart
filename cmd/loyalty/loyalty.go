@@ -50,7 +50,7 @@ func (a *AccrualSystem) GetAccrual(orderNumber string) (float64, error) {
 
 		return accrualResponse.Accrual, nil
 	} else if resp.StatusCode == http.StatusInternalServerError {
-
+		return 0, fmt.Errorf("error getting Accrual: %v", err)
 	}
 
 	return 0, nil
