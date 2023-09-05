@@ -3,7 +3,7 @@ package loyalty
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -37,7 +37,7 @@ func (a *AccrualSystem) GetAccrual(orderNumber string) (float64, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return 0, fmt.Errorf("error reading response body: %v", err)
 		}
