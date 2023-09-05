@@ -28,7 +28,7 @@ type accrualResponse struct {
 }
 
 func (a *AccrualSystem) GetAccrual(orderNumber string) (float64, error) {
-	reqURL := fmt.Sprintf("%s/%s", a.baseURL, orderNumber)
+	reqURL := fmt.Sprintf("%s/api/orders/%s", a.baseURL, orderNumber)
 	fmt.Println("request URL", reqURL)
 	resp, err := http.Get(reqURL)
 	if err != nil {
