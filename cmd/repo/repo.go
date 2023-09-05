@@ -20,6 +20,7 @@ type Repo interface {
 	CreateOrder(number string, userID uint) (orderID uint, err error)
 	GetOrders(userID uint) ([]Order, error)
 
+	MakeTransaction(orderNumber string, amount float64) error
 	GetBalance(userID uint) (float64, error)
 	GetUsed(userID uint) (float64, error)
 }

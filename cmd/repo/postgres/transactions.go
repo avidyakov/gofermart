@@ -20,3 +20,19 @@ func (r *Repo) GetUsed(userID uint) (float64, error) {
 	}
 	return used, nil
 }
+
+func (r *Repo) MakeTransaction(orderNumber string, amount float64) error {
+	var order Order
+	dbc := r.db.Where("number = ?", orderNumber).First(&order)
+	if dbc.Error != nil {
+		return dbc.Error
+	}
+	dbc = r.db.Create(&Transaction{
+		OrderID: order.ID,
+		Amount:  amount,
+	})
+	if dbc.Error != nil {
+		return dbc.Error
+	}
+	return nil
+}

@@ -42,6 +42,7 @@ func (h *Handlers) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	go h.accrueLoyaltyPoints(string(*orderNumber))
 	w.WriteHeader(http.StatusAccepted)
 	log.Printf("User %s create order %s", userLogin, string(*orderNumber))
 }
@@ -92,4 +93,18 @@ func (h *Handlers) GetOrders(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("User %s get orders", userLogin)
+}
+
+func (h *Handlers) accrueLoyaltyPoints(order string) {
+	accrual, accrualErr := h.accrualSystem.GetAccrual(order)
+	if accrualErr != nil {
+		log.Printf("Error getting accrual for order %s: %v", order, accrualErr)
+		return
+	}
+
+	repoErr := h.repo.MakeTransaction(order, accrual)
+	if repoErr != nil {
+		log.Printf("Error making transaction for order %s: %v", order, repoErr)
+		return
+	}
 }
