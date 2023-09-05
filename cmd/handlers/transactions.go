@@ -140,7 +140,7 @@ func (h *Handlers) GetWithdrawals(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	jsonData, err := json.Marshal(withdrawals)
+	jsonData, err := json.Marshal(response)
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
