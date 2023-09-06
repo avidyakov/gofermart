@@ -99,12 +99,15 @@ func (h *Handlers) accrueLoyaltyPoints(order string) {
 	accrual, accrualErr := h.accrualSystem.GetAccrual(order)
 	if accrualErr != nil {
 		log.Printf("Error getting accrual for order %s: %v", order, accrualErr)
+		go h.accrueLoyaltyPoints(order)
 		return
 	}
 
+	log.Printf("Accrual for order %s: %f", order, accrual)
 	repoErr := h.repo.MakeTransaction(order, accrual)
 	if repoErr != nil {
 		log.Printf("Error making transaction for order %s: %v", order, repoErr)
 		return
 	}
+	log.Printf("Transaction for order %s completed", order)
 }
