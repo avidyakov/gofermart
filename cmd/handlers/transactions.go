@@ -97,7 +97,7 @@ func (h *Handlers) Withdraw(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		repoErr := h.repo.MakeTransaction(withdrawal.Order, -withdrawal.Sum)
+		repoErr := h.repo.MakeTransaction(withdrawal.Order, "", -withdrawal.Sum)
 		if repoErr != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			log.Printf("Error making transaction: %v", repoErr)

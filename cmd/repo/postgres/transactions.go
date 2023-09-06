@@ -41,10 +41,21 @@ func (r *Repo) MakeTransaction(orderNumber, status string, amount float64) error
 		tx.Rollback()
 		return dbc.Error
 	}
-	dbc = r.db.Model(&order).Update("status", status)
-	if dbc.Error != nil {
-		tx.Rollback()
-		return dbc.Error
+	if status != "" {
+		newStatus := Invalid
+		if status == "PROCESSED" {
+			newStatus = Processed
+		} else if status == "PROCESSING" {
+			newStatus = Processing
+		} else if status == "NEW" {
+			newStatus = New
+		}
+
+		dbc = r.db.Model(&order).Update("status", newStatus)
+		if dbc.Error != nil {
+			tx.Rollback()
+			return dbc.Error
+		}
 	}
 	tx.Commit()
 	return nil
