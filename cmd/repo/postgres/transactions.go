@@ -50,8 +50,7 @@ func (r *Repo) MakeTransaction(orderNumber, status string, amount float64) error
 		} else if status == "NEW" {
 			newStatus = New
 		}
-
-		dbc = r.db.Model(&order).Update("status", newStatus)
+		dbc = r.db.Model(&order).Updates(map[string]interface{}{"status": newStatus, "accrual": amount})
 		if dbc.Error != nil {
 			tx.Rollback()
 			return dbc.Error
