@@ -9,7 +9,7 @@ import (
 )
 
 type LoyaltySystem interface {
-	GetAccrual(orderNumber string) (float64, error)
+	GetAccrual(orderNumber string) (float64, string, error)
 }
 
 type AccrualSystem struct {
@@ -28,31 +28,31 @@ type accrualResponse struct {
 	Order   string  `json:"order"`
 }
 
-func (a *AccrualSystem) GetAccrual(orderNumber string) (float64, error) {
+func (a *AccrualSystem) GetAccrual(orderNumber string) (float64, string, error) {
 	reqURL := fmt.Sprintf("%s/api/orders/%s", a.baseURL, orderNumber)
 	fmt.Println("request URL", reqURL)
 	resp, err := http.Get(reqURL)
 	if err != nil {
-		return 0, fmt.Errorf("error getting Accrual: %v", err)
+		return 0, "", fmt.Errorf("error getting Accrual: %v", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
-			return 0, fmt.Errorf("error reading response body: %v", err)
+			return 0, "", fmt.Errorf("error reading response body: %v", err)
 		}
 
 		var accrualResponse accrualResponse
 		err = json.Unmarshal(body, &accrualResponse)
 		if err != nil {
-			return 0, fmt.Errorf("error unmarshaling response: %v", err)
+			return 0, "", fmt.Errorf("error unmarshaling response: %v", err)
 		}
 
 		log.Printf("result: %v", accrualResponse)
-		return accrualResponse.Accrual, nil
+		return accrualResponse.Accrual, accrualResponse.Status, nil
 	}
 
 	log.Printf("response status code: %d", resp.StatusCode)
-	return 0, fmt.Errorf("error getting Accrual: %v", err)
+	return 0, "", fmt.Errorf("error getting Accrual: %v", err)
 }

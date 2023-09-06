@@ -96,7 +96,7 @@ func (h *Handlers) GetOrders(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) accrueLoyaltyPoints(order string) {
-	accrual, accrualErr := h.accrualSystem.GetAccrual(order)
+	accrual, status, accrualErr := h.accrualSystem.GetAccrual(order)
 	if accrualErr != nil {
 		log.Printf("Error getting accrual for order %s: %v", order, accrualErr)
 		go h.accrueLoyaltyPoints(order)
@@ -104,7 +104,7 @@ func (h *Handlers) accrueLoyaltyPoints(order string) {
 	}
 
 	log.Printf("Accrual for order %s: %f", order, accrual)
-	repoErr := h.repo.MakeTransaction(order, accrual)
+	repoErr := h.repo.MakeTransaction(order, status, accrual)
 	if repoErr != nil {
 		log.Printf("Error making transaction for order %s: %v", order, repoErr)
 		return
